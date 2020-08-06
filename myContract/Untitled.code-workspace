@@ -1,0 +1,11 @@
+{
+    "folders": [
+		{
+			"name": "myContract",
+			"path": "."
+		}
+	],
+    "settings": {
+        "git.ignoreLimitWarning": true
+    }
+}
