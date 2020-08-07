@@ -4,39 +4,39 @@ pragma solidity >=0.4.22 <=0.7.0;
 import "./MyGame.sol";
 import "./SafeMath.sol";
 
-abstract contract MYCAT {
+contract MYCAT {
     event newCat();
 
-    uint id;
-    string name;
-    uint8 level;
-    uint32 experience; // max is 100000.
+    uint public id;
+    string public name;
+    uint8 public level;
+    uint32 public experience; // max is 100000.
 
     using SafeMath for uint32;
     using SafeMath for uint8;
 
-    uint32 ExLevelUp = 100000;
-    uint8 levelMax = 255;
+    uint32 public ExLevelUp = 100000;
+    uint8 public levelMax = 255;
 
-    uint countCat;
-    uint8 exAdd = 100;
+    uint public countCat;
+    uint8 public exAdd = 100;
 
-    function levelUpCat() internal {
-        require(level < 255, "Max level !");
-        level.add(1);
-    }
-
-    constructor(uint id, string name) {
+    constructor(uint  idCat, string memory nameCat) {
         this.id = id;
         this.name = name;
     }
 
-    function levelDownCat() internal {
+    function levelUpCat() public {
+        require(level < 255, "Max level !");
+        level.add(1);
+    }
+
+    function levelDownCat() public {
         require(level > 1, "Require : Level > 1 !");
         level.sub(1);
     }
 
-    function upExpCat() internal {
+    function upExpCat() public {
 
         if(experience + exAdd >= ExLevelUp){
             levelUpCat(id);
@@ -46,7 +46,7 @@ abstract contract MYCAT {
         experience.add(exAdd);
     }
 
-    function downExpCat() internal {
+    function downExpCat() public {
         if(experience >= exAdd*2)
         experience.sub(exAdd*2);
         else{

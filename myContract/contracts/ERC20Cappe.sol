@@ -6,7 +6,7 @@ import "./MyGame.sol";
 /**
  * @dev Extension of {ERC20} that adds a cap to the supply of tokens.
  */
-abstract contract ERC20Capped is ERC20 {
+abstract contract ERC20Capped is MyGame {
     uint256 private _cap;
 
     /**

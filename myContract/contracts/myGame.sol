@@ -7,18 +7,18 @@ import "./MYCAT.sol";
 import "./Context.sol";
 
 
-contract myGame is IERC20, Context {
+contract MyGame is IERC20, Context {
     using SafeMath for uint256;
     using SafeMath for address;
     using SafeMath for uint32;
     using SafeMath for uint8;
     //using Address for address;
 
-    uint upLevelFee = 0.5;
+    uint upLevelFee = 1;
     uint modulus = 100;
 
     MYCAT[] public cats;
-    uint countCat;
+    uint public countCat;
 
     mapping (address => uint) public myCat;
 
@@ -31,17 +31,18 @@ contract myGame is IERC20, Context {
     uint8 private  _decimals = 2; //0.01
     uint _totalSupply = 1000000000;
 
-    constructor() public {
+    constructor() {
         _mint(msg.sender, _totalSupply);
     }
 
 function createMyCat(string memory name) public {
     countCat++;
     myCat[_msgSender()] = countCat;
-    addCat(MYCAT(countCat, name));
+    MYCAT newCat;
+    addCat(new MYCAT(countCat, name));
     }
 
-function addCat(MYCAT u) internal {
+function addCat(MYCAT u) public {
     cats.push(u);
     }
 
@@ -52,25 +53,25 @@ function viewCat(address u) public view returns(uint) {
 function levelUpByFee() public {
     require(balanceOf(_msgSender()) >= upLevelFee, "Balances isn't enought !");
     balanceOf(_msgSender()).sub(upLevelFee);
-    cats[myCat[_msgSender]].levelUpCat;
+    cats[myCat[_msgSender()]].levelUpCat();
     }
 
 function attackTmp(address orther, uint8 luckyNumber) internal returns(bool) {
     uint level1;
     uint lucky;
     lucky = randMod(luckyNumber);
-    if(cats[myCat[_msgSender()]].level >= cats[myCat[orther]].level){
-        level1 = (cats[myCat[_msgSender()]].level.sub(cats[myCat[orther]].level)).div(cats[myCat[_msgSender()]].levelMax);
+    if(cats[myCat[_msgSender()]].level() >= cats[myCat[orther]].level()){
+        level1 = (cats[myCat[_msgSender()]].level().sub(cats[myCat[orther]].level())).div(cats[myCat[_msgSender()]].levelMax());
         if(lucky.add(level1) >= 100 ) return true;
         else return false;
     }
     else {
-        level1 = 1 - (cats[myCat[orther]].level.sub(cats[myCat[_msgSender()]].level)).div(cats[myCat[_msgSender()]].levelMax);
+        level1 = 1 - (cats[myCat[orther]].level().sub(cats[myCat[_msgSender()]].level())).div(cats[myCat[_msgSender()]].levelMax());
     }
 }
 
 function attack(address orther, uint8 luckyNumber) internal returns(bool) {
-    require(cats[myCat[_msgSender()]].level > 1, "Require : level > 1");
+    require(cats[myCat[_msgSender()]].level() > 1, "Require : level > 1");
     if(attackTmp(orther, luckyNumber) == true){
         cats[myCat[orther]].upExpCat();
         cats[myCat[_msgSender()]].upExpCat();
@@ -83,7 +84,7 @@ function attack(address orther, uint8 luckyNumber) internal returns(bool) {
 }
 
 function randMod(uint8 luckyNumber) internal view returns(uint) {
-    return uint(keccak256(abi.encodePacked(now, _msgSender(), luckyNumber))).mod(modulus);
+    return uint(keccak256(abi.encodePacked(block.timestamp, _msgSender(), luckyNumber))).mod(modulus);
   }
 
     /**
@@ -157,7 +158,7 @@ function randMod(uint8 luckyNumber) internal view returns(uint) {
      */
     function transferFrom(address sender, address recipient, uint256 amount) public virtual override returns (bool) {
         _transfer(sender, recipient, amount);
-        _approve(sender, _msgSender(), _allowances[sender][_msgSender()].sub(amount, "ERC20: transfer amount exceeds allowance"));
+        _approve(sender, _msgSender(), _allowances[sender][_msgSender()].sub(amount));
         return true;
     }
 
@@ -193,7 +194,7 @@ function randMod(uint8 luckyNumber) internal view returns(uint) {
      * `subtractedValue`.
      */
     function decreaseAllowance(address spender, uint256 subtractedValue) public virtual returns (bool) {
-        _approve(_msgSender(), spender, _allowances[_msgSender()][spender].sub(subtractedValue, "ERC20: decreased allowance below zero"));
+        _approve(_msgSender(), spender, _allowances[_msgSender()][spender].sub(subtractedValue));
         return true;
     }
 
@@ -217,7 +218,7 @@ function randMod(uint8 luckyNumber) internal view returns(uint) {
 
         _beforeTokenTransfer(sender, recipient, amount);
 
-        _balances[sender] = _balances[sender].sub(amount, "ERC20: transfer amount exceeds balance");
+        _balances[sender] = _balances[sender].sub(amount);
         _balances[recipient] = _balances[recipient].add(amount);
         emit Transfer(sender, recipient, amount);
     }
@@ -257,7 +258,7 @@ function randMod(uint8 luckyNumber) internal view returns(uint) {
 
         _beforeTokenTransfer(account, address(0), amount);
 
-        _balances[account] = _balances[account].sub(amount, "ERC20: burn amount exceeds balance");
+        _balances[account] = _balances[account].sub(amount);
         _totalSupply = _totalSupply.sub(amount);
         emit Transfer(account, address(0), amount);
     }

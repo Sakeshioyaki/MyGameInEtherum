@@ -1,15 +1,15 @@
 //SPDX-License-Identifier: MIT
-pragma solidity >=0.4.22 <0.7.0;
+pragma solidity >=0.4.22 <=0.7.0;
 
-import "./context.sol";
-import "./ERC20.sol";
+import "./Context.sol";
+import "./MyGame.sol";
 
 /**
  * @dev Extension of {ERC20} that allows token holders to destroy both their own
  * tokens and those that they have an allowance for, in a way that can be
  * recognized off-chain (via event analysis).
  */
-abstract contract ERC20Burnable is Context, ERC20 {
+abstract contract ERC20Burnable is Context, MyGame {
     /**
      * @dev Destroys `amount` tokens from the caller.
      *
