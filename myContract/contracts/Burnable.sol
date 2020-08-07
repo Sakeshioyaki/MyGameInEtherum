@@ -3,6 +3,7 @@ pragma solidity >=0.4.22 <=0.7.0;
 
 import "./Context.sol";
 import "./MyGame.sol";
+import "./SafeMath.sol";
 
 /**
  * @dev Extension of {ERC20} that allows token holders to destroy both their own
@@ -10,6 +11,7 @@ import "./MyGame.sol";
  * recognized off-chain (via event analysis).
  */
 abstract contract ERC20Burnable is Context, MyGame {
+    using SafeMath for uint256;
     /**
      * @dev Destroys `amount` tokens from the caller.
      *
@@ -31,7 +33,7 @@ abstract contract ERC20Burnable is Context, MyGame {
      * `amount`.
      */
     function burnFrom(address account, uint256 amount) public virtual {
-        uint256 decreasedAllowance = allowance(account, _msgSender()).sub(amount, "ERC20: burn amount exceeds allowance");
+        uint256 decreasedAllowance = allowance(account, _msgSender()).sub(amount);
 
         _approve(account, _msgSender(), decreasedAllowance);
         _burn(account, amount);
