@@ -14,9 +14,11 @@ contract myGame is IERC20, Context {
     using SafeMath for uint8;
     //using Address for address;
 
-
-    uint upLevelFee = 10000 wei;
+    uint upLevelFee = 0.5;
     uint modulus = 100;
+
+    MYCAT[] public cats;
+    uint countCat;
 
     mapping (address => uint) public myCat;
 
@@ -26,27 +28,31 @@ contract myGame is IERC20, Context {
 
     string private  _name = 'Anh Token';
     string private  _symbol = 'ATK';
-    uint8 private  _decimals = 3; //0.001
-    uint _totalSupply = 100000000000;
+    uint8 private  _decimals = 2; //0.01
+    uint _totalSupply = 1000000000;
 
     constructor() public {
         _mint(msg.sender, _totalSupply);
     }
 
+function createMyCat(string memory name) public {
+    countCat++;
+    myCat[_msgSender()] = countCat;
+    addCat(MYCAT(countCat, name));
+    }
+
+function addCat(MYCAT u) internal {
+    cats.push(u);
+    }
+
 function viewCat(address u) public view returns(uint) {
     return myCat[u];
-}
+    }
 
 function levelUpByFee() public {
     require(balanceOf(_msgSender()) >= upLevelFee, "Balances isn't enought !");
     balanceOf(_msgSender()).sub(upLevelFee);
-    levelUpCat(myCat[_msgSender()]);
-    }
-
-function createMyCat(string memory name) public {
-    countCat++;
-    myCat[_msgSender()] = countCat;
-    addCat(CAT(countCat, name, 1, 0));
+    cats[myCat[_msgSender]].levelUpCat;
     }
 
 function attackTmp(address orther, uint8 luckyNumber) internal returns(bool) {
@@ -54,24 +60,24 @@ function attackTmp(address orther, uint8 luckyNumber) internal returns(bool) {
     uint lucky;
     lucky = randMod(luckyNumber);
     if(cats[myCat[_msgSender()]].level >= cats[myCat[orther]].level){
-        level1 = (cats[myCat[_msgSender()]].level.sub(cats[myCat[orther]].level)).div(levelMax);
+        level1 = (cats[myCat[_msgSender()]].level.sub(cats[myCat[orther]].level)).div(cats[myCat[_msgSender()]].levelMax);
         if(lucky.add(level1) >= 100 ) return true;
         else return false;
     }
     else {
-        level1 = 1 - (cats[myCat[orther]].level.sub(cats[myCat[_msgSender()]].level)).div(levelMax);
+        level1 = 1 - (cats[myCat[orther]].level.sub(cats[myCat[_msgSender()]].level)).div(cats[myCat[_msgSender()]].levelMax);
     }
 }
 
 function attack(address orther, uint8 luckyNumber) internal returns(bool) {
     require(cats[myCat[_msgSender()]].level > 1, "Require : level > 1");
     if(attackTmp(orther, luckyNumber) == true){
-        upExpCat(myCat[_msgSender()]);
-        upExpCat(myCat[orther]);
+        cats[myCat[orther]].upExpCat();
+        cats[myCat[_msgSender()]].upExpCat();
     }
     else{
-        downExpCat(myCat[_msgSender()]);
-        upExpCat(myCat[orther]);
+        cats[myCat[_msgSender()]].downExpCat();
+        cats[myCat[orther]].upExpCat();
     }
 
 }

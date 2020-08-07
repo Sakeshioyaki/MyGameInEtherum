@@ -1,7 +1,7 @@
 //SPDX-License-Identifier: MIT
-pragma solidity >=0.4.22 <0.7.0;
+pragma solidity >=0.4.22 <=0.7.0;
 
-import "./ERC20.sol";
+import "./MyGame.sol";
 
 /**
  * @dev Extension of {ERC20} that adds a cap to the supply of tokens.
