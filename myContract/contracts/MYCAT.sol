@@ -21,9 +21,9 @@ contract MYCAT {
     uint public countCat;
     uint8 public exAdd = 100;
 
-    constructor(uint  idCat, string memory nameCat) {
-        this.id = id;
-        this.name = name;
+    constructor(uint idCat, string memory nameCat) {
+        id = idCat;
+        name = nameCat;
     }
 
     function levelUpCat() public {
@@ -39,7 +39,7 @@ contract MYCAT {
     function upExpCat() public {
 
         if(experience + exAdd >= ExLevelUp){
-            levelUpCat(id);
+            levelUpCat();
             experience = experience + exAdd - ExLevelUp;
         }
         else
@@ -50,7 +50,7 @@ contract MYCAT {
         if(experience >= exAdd*2)
         experience.sub(exAdd*2);
         else{
-            levelDownCat(id);
+            levelDownCat();
             experience = ExLevelUp - exAdd*2 + experience;
         }
     }
