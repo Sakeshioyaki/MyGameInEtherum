@@ -38,7 +38,6 @@ contract MyGame is IERC20, Context {
 function createMyCat(string memory name) public {
     countCat++;
     myCat[_msgSender()] = countCat;
-    MYCAT newCat;
     addCat(new MYCAT(countCat, name));
     }
 
@@ -67,6 +66,7 @@ function attackTmp(address orther, uint8 luckyNumber) internal returns(bool) {
     }
     else {
         level1 = 1 - (cats[myCat[orther]].level().sub(cats[myCat[_msgSender()]].level())).div(cats[myCat[_msgSender()]].levelMax());
+        return false;
     }
 }
 

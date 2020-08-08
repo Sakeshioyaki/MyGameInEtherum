@@ -2,18 +2,20 @@
 pragma solidity >=0.4.22 <=0.7.0;
 
 import "./MyGame.sol";
+import "./SafeMath.sol";
 
 /**
  * @dev Extension of {ERC20} that adds a cap to the supply of tokens.
  */
-abstract contract ERC20Capped is MyGame {
+contract ERC20Capped is MyGame {
+    using SafeMath for uint256;
     uint256 private _cap;
 
     /**
      * @dev Sets the value of the `cap`. This value is immutable, it can only be
      * set once during construction.
      */
-    constructor (uint256 cap) public {
+    constructor (uint256 cap) {
         require(cap > 0, "ERC20Capped: cap is 0");
         _cap = cap;
     }
