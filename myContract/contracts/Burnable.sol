@@ -1,15 +1,17 @@
 //SPDX-License-Identifier: MIT
-pragma solidity >=0.4.22 <0.7.0;
+pragma solidity >=0.4.22 <=0.7.0;
 
-import "./context.sol";
-import "./ERC20.sol";
+import "./Context.sol";
+import "./MyGame.sol";
+import "./SafeMath.sol";
 
 /**
  * @dev Extension of {ERC20} that allows token holders to destroy both their own
  * tokens and those that they have an allowance for, in a way that can be
  * recognized off-chain (via event analysis).
  */
-abstract contract ERC20Burnable is Context, ERC20 {
+abstract contract ERC20Burnable is Context, MyGame {
+    using SafeMath for uint256;
     /**
      * @dev Destroys `amount` tokens from the caller.
      *
@@ -31,7 +33,7 @@ abstract contract ERC20Burnable is Context, ERC20 {
      * `amount`.
      */
     function burnFrom(address account, uint256 amount) public virtual {
-        uint256 decreasedAllowance = allowance(account, _msgSender()).sub(amount, "ERC20: burn amount exceeds allowance");
+        uint256 decreasedAllowance = allowance(account, _msgSender()).sub(amount);
 
         _approve(account, _msgSender(), decreasedAllowance);
         _burn(account, amount);
