@@ -11,6 +11,7 @@ module.exports = function(deployer) {
     deployer.deploy(ERC20Cappe);
     deployer.deploy(Context);
     deployer.deploy(IERC20);
+    deployer.deploy(MYCAT);
     deployer.link(MyGame, SafeMath);
 
 };

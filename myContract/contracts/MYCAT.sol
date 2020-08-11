@@ -26,12 +26,12 @@ contract MYCAT {
         name = nameCat;
     }
 
-    function levelUpCat() public {
+    function levelUpCat() view public {
         require(level < 255, "Max level !");
         level.add(1);
     }
 
-    function levelDownCat() public {
+    function levelDownCat() view public {
         require(level > 1, "Require : Level > 1 !");
         level.sub(1);
     }

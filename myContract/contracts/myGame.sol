@@ -49,13 +49,13 @@ function viewCat(address u) public view returns(uint) {
     return myCat[u];
     }
 
-function levelUpByFee() public {
+function levelUpByFee() view public {
     require(balanceOf(_msgSender()) >= upLevelFee, "Balances isn't enought !");
     balanceOf(_msgSender()).sub(upLevelFee);
     cats[myCat[_msgSender()]].levelUpCat();
     }
 
-function attackTmp(address orther, uint8 luckyNumber) internal returns(bool) {
+function attackTmp(address orther, uint8 luckyNumber) internal view returns(bool) {
     uint level1;
     uint lucky;
     lucky = randMod(luckyNumber);
