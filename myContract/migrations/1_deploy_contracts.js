@@ -7,7 +7,7 @@ const Context = artifacts.require("Context");
 
 module.exports = function(deployer) {
     deployer.deploy(MyGame);
+    deployer.link(MyGame, SafeMath);
     deployer.deploy(ERC20Capped, 100000000);
     // deployer.deploy(MYCAT);
-    deployer.link(MyGame, SafeMath);
 };
