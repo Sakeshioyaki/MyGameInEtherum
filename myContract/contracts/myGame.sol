@@ -29,10 +29,10 @@ contract MyGame is IERC20, Context {
     string private  _name = 'Anh Token';
     string private  _symbol = 'ATK';
     uint8 private  _decimals = 2; //0.01
-    uint _totalSupply = 1000000000;
+    uint _totalSupply = 1000000;
 
     constructor() {
-        _mint(msg.sender, _totalSupply);
+        _mint(msg.sender, 100);
     }
 
 function createMyCat(string memory name) public {
