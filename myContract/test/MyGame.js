@@ -13,7 +13,7 @@ it("Goi function theo link thu vien sau", () => {
 
     return MyGame.deployed()
         .then(instance => {
-            MyGame = instance
+            MyGame = instance;
             return MyGame.balanceOf.call(account[0]);
         })
         .then(instance => {
