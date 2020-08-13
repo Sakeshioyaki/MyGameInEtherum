@@ -54,7 +54,7 @@ contract MYCAT {
             experience = ExLevelUp - exAdd*2 + experience;
         }
     }
-
+    
     function showNameCat() public view returns (string memory) {
         return name;
     }

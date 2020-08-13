@@ -14,7 +14,7 @@ contract MyGame is IERC20, Context {
     using SafeMath for uint8;
     //using Address for address;
 
-    uint upLevelFee = 1;
+    uint upLevelFee = 5;
     uint modulus = 100;
 
     MYCAT[] public cats;
@@ -45,8 +45,16 @@ function addCat(MYCAT u) public {
     cats.push(u);
     }
 
-function viewCat(address u) public view returns(uint) {
-    return myCat[u];
+function showNameCat(address curr) public view returns (string memory) {
+        return cats[myCat[curr]].showNameCat();
+    }
+
+function showLevelCat(address curr) public view returns (uint8) {
+        return cats[myCat[curr]].showLevelCat();
+    }
+
+function showExperience(address curr) public view returns (uint32) {
+        return cats[myCat[curr]].showExperience();
     }
 
 function levelUpByFee() view public {
