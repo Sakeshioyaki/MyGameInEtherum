@@ -35,35 +35,39 @@ contract MyGame is IERC20, Context {
         _mint(msg.sender, 100);
     }
 
-function createMyCat(string memory name) public {
+function createMyCat(string memory name) external {
     countCat++;
     myCat[_msgSender()] = countCat;
-    addCat(new MYCAT(countCat, name));
+    MYCAT storage pet = new MYCAT();
+    pet.name = name;
+    pet.id = countCat++;
+    addCat(pet);
     }
 
-function addCat(MYCAT u) public {
+function addCat(MYCAT u) internal {
     cats.push(u);
     }
 
 function showNameCat(address curr) public view returns (string memory) {
-        return cats[myCat[curr]].showNameCat();
+        return cats[myCat[curr]].name();
     }
 
 function showLevelCat(address curr) public view returns (uint8) {
-        return cats[myCat[curr]].showLevelCat();
+        uint8 leve = cats[myCat[curr]].level();
+        return leve;
     }
 
 function showExperience(address curr) public view returns (uint32) {
-        return cats[myCat[curr]].showExperience();
+        return cats[myCat[curr]].experience();
     }
 
 function levelUpByFee() view public {
     require(balanceOf(_msgSender()) >= upLevelFee, "Balances isn't enought !");
-    balanceOf(_msgSender()).sub(upLevelFee);
+    _balances[_msgSender()].sub(upLevelFee);
     cats[myCat[_msgSender()]].levelUpCat();
     }
 
-function attackTmp(address orther, uint8 luckyNumber) internal view returns(bool) {
+function attackTmp(address orther, uint8 luckyNumber) public view returns(bool) {
     uint level1;
     uint lucky;
     lucky = randMod(luckyNumber);
@@ -78,9 +82,11 @@ function attackTmp(address orther, uint8 luckyNumber) internal view returns(bool
     }
 }
 
-function attack(address orther, uint8 luckyNumber) internal returns(bool) {
-    require(cats[myCat[_msgSender()]].level() > 1, "Require : level > 1");
-    if(attackTmp(orther, luckyNumber) == true){
+function attack(address orther, uint8 luckyNumber) external returns(bool) {
+    require((cats[myCat[_msgSender()]].level() > 1) || (cats[myCat[_msgSender()]].level() >= cats[myCat[_msgSender()]].exAdd()), "Can't attack !");
+    bool result = attackTmp(orther, luckyNumber);
+    if(result  == true){
+    
         cats[myCat[orther]].upExpCat();
         cats[myCat[_msgSender()]].upExpCat();
     }
@@ -88,47 +94,48 @@ function attack(address orther, uint8 luckyNumber) internal returns(bool) {
         cats[myCat[_msgSender()]].downExpCat();
         cats[myCat[orther]].upExpCat();
     }
+    return result;
 
 }
 
-function randMod(uint8 luckyNumber) internal view returns(uint) {
+function randMod(uint8 luckyNumber) public view returns(uint) {
     return uint(keccak256(abi.encodePacked(block.timestamp, _msgSender(), luckyNumber))).mod(modulus);
   }
 
     /**
      * @dev Returns the name of the token.
      */
-    function name() public view returns (string memory) {
+function name() public view returns (string memory) {
         return _name;
-    }
+}
 
     /**
      * @dev Returns the symbol of the token, usually a shorter version of the
      * name.
      */
-    function symbol() public view returns (string memory) {
+function symbol() public view returns (string memory) {
         return _symbol;
     }
 
-        function decimals() public view returns (uint8) {
+function decimals() public view returns (uint8) {
         return _decimals;
     }
 
     /**
      * @dev See {IERC20-totalSupply}.
      */
-    function totalSupply() public view override returns (uint256) {
+function totalSupply() public view override returns (uint256) {
         return _totalSupply;
     }
 
     /**
      * @dev See {IERC20-balanceOf}.
      */
-    function balanceOf(address account) public view override returns (uint256) {
+function balanceOf(address account) public view override returns (uint256) {
         return _balances[account];
     }
 
-    function transfer(address recipient, uint256 amount) public virtual override returns (bool) {
+function transfer(address recipient, uint256 amount) public virtual override returns (bool) {
         _transfer(_msgSender(), recipient, amount);
         return true;
     }
@@ -136,7 +143,7 @@ function randMod(uint8 luckyNumber) internal view returns(uint) {
     /**
      * @dev See {IERC20-allowance}.
      */
-    function allowance(address owner, address spender) public view virtual override returns (uint256) {
+function allowance(address owner, address spender) public view virtual override returns (uint256) {
         return _allowances[owner][spender];
     }
 
@@ -147,7 +154,7 @@ function randMod(uint8 luckyNumber) internal view returns(uint) {
      *
      * - `spender` cannot be the zero address.
      */
-    function approve(address spender, uint256 amount) public virtual override returns (bool) {
+function approve(address spender, uint256 amount) public virtual override returns (bool) {
         _approve(_msgSender(), spender, amount);
         return true;
     }
@@ -164,7 +171,7 @@ function randMod(uint8 luckyNumber) internal view returns(uint) {
      * - the caller must have allowance for ``sender``'s tokens of at least
      * `amount`.
      */
-    function transferFrom(address sender, address recipient, uint256 amount) public virtual override returns (bool) {
+function transferFrom(address sender, address recipient, uint256 amount) public virtual override returns (bool) {
         _transfer(sender, recipient, amount);
         _approve(sender, _msgSender(), _allowances[sender][_msgSender()].sub(amount));
         return true;
@@ -182,7 +189,7 @@ function randMod(uint8 luckyNumber) internal view returns(uint) {
      *
      * - `spender` cannot be the zero address.
      */
-    function increaseAllowance(address spender, uint256 addedValue) public virtual returns (bool) {
+function increaseAllowance(address spender, uint256 addedValue) public virtual returns (bool) {
         _approve(_msgSender(), spender, _allowances[_msgSender()][spender].add(addedValue));
         return true;
     }
@@ -201,7 +208,7 @@ function randMod(uint8 luckyNumber) internal view returns(uint) {
      * - `spender` must have allowance for the caller of at least
      * `subtractedValue`.
      */
-    function decreaseAllowance(address spender, uint256 subtractedValue) public virtual returns (bool) {
+function decreaseAllowance(address spender, uint256 subtractedValue) public virtual returns (bool) {
         _approve(_msgSender(), spender, _allowances[_msgSender()][spender].sub(subtractedValue));
         return true;
     }
@@ -220,7 +227,7 @@ function randMod(uint8 luckyNumber) internal view returns(uint) {
      * - `recipient` cannot be the zero address.
      * - `sender` must have a balance of at least `amount`.
      */
-    function _transfer(address sender, address recipient, uint256 amount) internal virtual {
+function _transfer(address sender, address recipient, uint256 amount) internal virtual {
         require(sender != address(0), "ERC20: transfer from the zero address");
         require(recipient != address(0), "ERC20: transfer to the zero address");
 
@@ -240,7 +247,7 @@ function randMod(uint8 luckyNumber) internal view returns(uint) {
      *
      * - `to` cannot be the zero address.
      */
-    function _mint(address account, uint256 amount) internal virtual {
+function _mint(address account, uint256 amount) internal virtual {
         require(account != address(0), "ERC20: mint to the zero address");
 
         _beforeTokenTransfer(address(0), account, amount);
@@ -261,7 +268,7 @@ function randMod(uint8 luckyNumber) internal view returns(uint) {
      * - `account` cannot be the zero address.
      * - `account` must have at least `amount` tokens.
      */
-    function _burn(address account, uint256 amount) internal virtual {
+function _burn(address account, uint256 amount) internal virtual {
         require(account != address(0), "ERC20: burn from the zero address");
 
         _beforeTokenTransfer(account, address(0), amount);
@@ -284,7 +291,7 @@ function randMod(uint8 luckyNumber) internal view returns(uint) {
      * - `owner` cannot be the zero address.
      * - `spender` cannot be the zero address.
      */
-    function _approve(address owner, address spender, uint256 amount) internal virtual {
+function _approve(address owner, address spender, uint256 amount) internal virtual {
         require(owner != address(0), "ERC20: approve from the zero address");
         require(spender != address(0), "ERC20: approve to the zero address");
 
@@ -299,7 +306,7 @@ function randMod(uint8 luckyNumber) internal view returns(uint) {
      * applications that interact with token contracts will not expect
      * {decimals} to ever change, and may work incorrectly if it does.
      */
-    function _setupDecimals(uint8 decimals_) internal {
+function _setupDecimals(uint8 decimals_) internal {
         _decimals = decimals_;
     }
 
@@ -317,6 +324,7 @@ function randMod(uint8 luckyNumber) internal view returns(uint) {
      *
      * To learn more about hooks, head to xref:ROOT:extending-contracts.adoc#using-hooks[Using Hooks].
      */
-    function _beforeTokenTransfer(address from, address to, uint256 amount) internal virtual {}
+function _beforeTokenTransfer(address from, address to, uint256 amount) internal virtual {}
 
 }
+
