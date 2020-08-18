@@ -14,6 +14,8 @@ contract MyGame is IERC20, Context, PET {
     using SafeMath for uint8;
     //using Address for address;
 
+    address private _owner;
+
     uint upLevelFee = 1;
     uint modulus = 100;
     
@@ -29,7 +31,13 @@ contract MyGame is IERC20, Context, PET {
     uint _totalSupply = 1000000;
 
     constructor() {
-        _mint(msg.sender, 100);
+        _mint(_msgSender(), 100);
+        _owner = _msgSender();
+    }
+
+    modifier onlyOwner() {
+        require(msg.sender == _owner, "only owner");
+        _;
     }
 
 function createMyCat(string memory name) public {

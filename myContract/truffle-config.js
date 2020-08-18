@@ -1,3 +1,5 @@
+// const HDWalletProvider = require("@truffle/hdwallet-provider");
+// const mnemonic = "jeans crowd arrow pair little chief stand wagon muscle birth oblige chronic";
 module.exports = {
     networks: {
         development: {
@@ -6,10 +8,18 @@ module.exports = {
             network_id: "*", // Match any network id
             gas: 5000000
         }
+        // ,
+        // ropsten: {
+        //     provider: function() {
+        //         return new HDWalletProvider(mnemonic, "https://ropsten.infura.io/v3/c1f678a8bf994141a272a7cb607316ff");
+        //     },
+        //     network_id: "3"
+        // }
     },
     compilers: {
         solc: {
             version: '0.7.0',
         }
     }
+
 };
