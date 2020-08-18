@@ -3,11 +3,11 @@ pragma solidity >=0.4.22 <=0.7.0;
 
 import "./IERC20.sol";
 import "./SafeMath.sol";
-import "./MYCAT.sol";
+import "./PET.sol";
 import "./Context.sol";
 
 
-contract MyGame is IERC20, Context {
+contract MyGame is IERC20, Context, PET {
     using SafeMath for uint256;
     using SafeMath for address;
     using SafeMath for uint32;
@@ -16,10 +16,7 @@ contract MyGame is IERC20, Context {
 
     uint upLevelFee = 1;
     uint modulus = 100;
-
-    MYCAT[] public cats;
-    uint public countCat;
-
+    
     mapping (address => uint) public myCat;
 
     mapping (address => uint256) private _balances;
@@ -36,13 +33,9 @@ contract MyGame is IERC20, Context {
     }
 
 function createMyCat(string memory name) public {
-    countCat++;
     myCat[_msgSender()] = countCat;
-    addCat(new MYCAT(countCat, name));
-    }
-
-function addCat(MYCAT u) public {
-    cats.push(u);
+    cats.push(CAT(countCat, name, 0, 0));    
+    countCat++;
     }
 
 function viewCat(address u) public view returns(uint) {
@@ -52,33 +45,34 @@ function viewCat(address u) public view returns(uint) {
 function levelUpByFee() view public {
     require(balanceOf(_msgSender()) >= upLevelFee, "Balances isn't enought !");
     balanceOf(_msgSender()).sub(upLevelFee);
-    cats[myCat[_msgSender()]].levelUpCat();
+    levelUpCat(myCat[_msgSender()]);
     }
 
 function attackTmp(address orther, uint8 luckyNumber) internal view returns(bool) {
     uint level1;
     uint lucky;
     lucky = randMod(luckyNumber);
-    if(cats[myCat[_msgSender()]].level() >= cats[myCat[orther]].level()){
-        level1 = (cats[myCat[_msgSender()]].level().sub(cats[myCat[orther]].level())).div(cats[myCat[_msgSender()]].levelMax());
+    if(cats[myCat[_msgSender()]].level >= cats[myCat[orther]].level){
+        level1 = (cats[myCat[_msgSender()]].level.sub(cats[myCat[orther]].level)).div(levelMax);
         if(lucky.add(level1) >= 100 ) return true;
         else return false;
     }
     else {
-        level1 = 1 - (cats[myCat[orther]].level().sub(cats[myCat[_msgSender()]].level())).div(cats[myCat[_msgSender()]].levelMax());
+        level1 = 1 - (cats[myCat[orther]].level.sub(cats[myCat[_msgSender()]].level)).div(levelMax);
         return false;
     }
 }
 
 function attack(address orther, uint8 luckyNumber) internal returns(bool) {
-    require(cats[myCat[_msgSender()]].level() > 1, "Require : level > 1");
+    //require(cats[myCat[_msgSender()]].level > 1, "Require : level > 1");
+    require(showExperience(myCat[_msgSender()]) >= exAdd , "Ex isn't enought");
     if(attackTmp(orther, luckyNumber) == true){
-        cats[myCat[orther]].upExpCat();
-        cats[myCat[_msgSender()]].upExpCat();
+        upExpCat(myCat[orther]);
+        upExpCat(myCat[_msgSender()]);
     }
     else{
-        cats[myCat[_msgSender()]].downExpCat();
-        cats[myCat[orther]].upExpCat();
+        downExpCat(myCat[_msgSender()]);
+        upExpCat(myCat[orther]);
     }
 
 }
