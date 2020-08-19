@@ -31,7 +31,7 @@ contract MyGame is IERC20, Context, PET {
     uint _totalSupply = 1000000;
 
     constructor() {
-        _mint(_msgSender(), 100);
+        _mint(msg.sender, 100);
         _owner = _msgSender();
     }
 
