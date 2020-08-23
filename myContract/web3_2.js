@@ -507,13 +507,29 @@ let payload = {
 
 let parameter = {
     from: account,
-    gas: web3.utils.toHex(1800000),
-    gasPrice: web3.utils.toHex(web3.utils.toWei('30', 'gwei'))
+    gas: web3.utils.toHex(1000000),
+    gasPrice: web3.utils.toHex(web3.utils.toWei('1', 'gwei'))
 }
 
-deploy_contract.deploy(payload).send(parameter, (err, transactionHash) => {
-        console.log('Transaction Hash = ', transactionHash);
-    })
-    .on('confirmation', () => {}).then((newContractInstance) => {
-        console.log('Deployed Contract Adress : ', newContractInstance.option.address);
-    })
+// deploy_contract.deploy(payload).send(parameter, (err, transactionHash) => {
+//     console.log('Transaction Hash :', transactionHash);
+// }).on('confirmation', () => {}).then((newContractInstance) => {
+//     console.log('Deployed Contract Address : ', newContractInstance.options.address);
+// })
+
+deploy_contract.methods.totalSupply().send({ from: '0xF97733BC082E09A64e65fAcd77CE9512783AC077' }, function(error, transactionHash) {
+    console.log('Transaction Hash :', transactionHash);
+
+});
+deploy_contract.methods.balanceOf('0xF97733BC082E09A64e65fAcd77CE9512783AC077').send({ from: '0xF97733BC082E09A64e65fAcd77CE9512783AC077' }, function(error, transactionHash) {
+    console.log('Transaction Hash :', transactionHash);
+
+}).then(console.log);
+deploy_contract.methods.transfer('0xeD455c6A90BCeb76d7c311F4955b185508e93420', 20).send({ from: '0xF97733BC082E09A64e65fAcd77CE9512783AC077' }, function(error, transactionHash) {
+    console.log('Transaction Hash :', transactionHash);
+
+});
+deploy_contract.methods.transfer('0x74bEa8b090507F51f7B4D9E1cc67C0a2fa61EaA1', 20).send({ from: '0xF97733BC082E09A64e65fAcd77CE9512783AC077' }, function(error, transactionHash) {
+    console.log('Transaction Hash :', transactionHash);
+
+}).then(console.log);
