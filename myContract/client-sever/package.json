@@ -1,0 +1,21 @@
+{
+    "name": "package",
+    "version": "1.0.0",
+    "description": "no",
+    "main": "no",
+    "scripts": {
+        "test": "no"
+    },
+    "repository": {
+        "type": "git",
+        "url": "no"
+    },
+    "keywords": [
+        "no"
+    ],
+    "author": "no",
+    "license": "UNLICENSED",
+    "dependencies": {
+        "express": "^4.17.1"
+    }
+}
